@@ -24,4 +24,4 @@ app.use(cookieParser())
 app.use("/products", productRoutes);
 app.use("/cart", cartRoutes);
 app.use("/orders", orderRoutes);
-app.use("./auth", authRoutes);
+app.use("/auth", authRoutes);

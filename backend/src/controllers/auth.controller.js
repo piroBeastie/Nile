@@ -23,7 +23,7 @@ export async function register(req,res){
             }
         )
 
-        res.status(200).json({_id: user.id, name:user.name, email:user.email})
+        res.status(201).json({_id: user.id, name:user.name, email:user.email})
     } catch(err){
         res.status(500).json({ error: err.message });
     }
@@ -31,14 +31,14 @@ export async function register(req,res){
 
 export async function login(req,res){
     try{
-        const {email, pass} = req.body
+        const {email, password} = req.body
 
         const user = await User.findOne({email})
         if(!user){
             return res.status(400).json({ message: "Invalid credentials" });
         }
 
-        const isMatch = await bcrypt.compare(pass, user.password)
+        const isMatch = await bcrypt.compare(password, user.password)
         if(!isMatch){
             return res.status(400).json({ message: "Invalid credentials" });
         }

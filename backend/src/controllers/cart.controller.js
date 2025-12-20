@@ -17,8 +17,9 @@ export async function getCart(req,res){
 }
 
 export async function postCart(req,res){
-    // res.status(201).send("Cart product added successfully")
+    // res.status(201).send("Cart product added successfully"
     try{
+		// console.log("req.user:", req.user); did for checking
 		const userId = req.user._id;
 		const {productId, quantity} = req.body;
 
@@ -26,7 +27,7 @@ export async function postCart(req,res){
 
 		if(!cart){
 			cart = await Cart.create({
-				user,
+				user: userId,
 				items: [{product: productId, quantity}],
 			});
 			return res.status(201).json(cart);
