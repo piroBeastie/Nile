@@ -4,17 +4,20 @@ const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
+  const [token, setToken] = useState(null);
 
-  function login(userData) {
+  function login(userData, jwt) {
     setUser(userData);
+    setToken(jwt);
   }
 
   function logout() {
     setUser(null);
+    setToken(null);
   }
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, token, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

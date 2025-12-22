@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import AuthLayout from "../layouts/AuthLayout";
+import { loginUser } from "../api/auth";
 import { useAuth } from "../context/AuthContext";
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -8,15 +9,23 @@ export default function LoginPage() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
-    //fake login
-    login({
-      name: "Nile User",
-      email: "user@nile.com",
-    });
-    const from = location.state?.from || "/";
-    navigate(from, { replace: true });
+    try {
+      const form = e.target;
+      const email = form.email.value;
+      const password = form.password.value;
+
+      const data = await loginUser(email, password);
+
+      login(data.user, data.token);
+
+      const from = location.state?.from || "/";
+      navigate(from, { replace: true });
+
+    } catch (err) {
+      alert(err.message);
+    }
   }
   return (
     <AuthLayout title="Sign in to Nile">
@@ -26,6 +35,7 @@ export default function LoginPage() {
             Email
           </label>
           <input
+            name="email"
             type="email"
             className="w-full border px-3 py-2 outline-none focus:border-black"
             placeholder="you@example.com"
@@ -37,6 +47,7 @@ export default function LoginPage() {
             Password
           </label>
           <input
+            name="password"
             type="password"
             className="w-full border px-3 py-2 outline-none focus:border-black"
             placeholder="••••••••"
