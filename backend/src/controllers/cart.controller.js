@@ -75,22 +75,24 @@ export async function putCart(req,res){
 	}
 }
 
-export async function deleteCart(req,res){
-    // res.status(200).send("Cart product deleted successfully")
-    try {
-		const userId = req.user._id;
-		const itemId = req.params.id;
+export async function deleteCart(req, res) {
+  try {
+    const userId = req.user._id;
+    const itemId = req.params.id;
 
-		const cart = await Cart.findOne({user: userId});
-		if(!cart){
-            return res.status(404).json({message: "Cart not found"})
-        };
+    const cart = await Cart.findOne({ user: userId });
+    if (!cart) {
+      return res.status(404).json({ message: "Cart not found" });
+    }
 
-		cart.items.id(itemId).remove();
-		await cart.save();
+    cart.items.pull({ _id: itemId });
 
-		res.status(200).json({message: "Cart item deleted", cart});
-	} catch (err){
-		res.status(500).json({error: err.message});
-	}
+    await cart.save();
+
+    res.status(200).json(cart);
+  } catch (err) {
+    console.error("DELETE CART ERROR:", err);
+    res.status(500).json({ error: err.message });
+  }
 }
+
