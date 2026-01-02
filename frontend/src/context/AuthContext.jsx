@@ -1,28 +1,48 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useState } from "react";
+import { login, register } from "../api/auth.api";
 
-const AuthContext = createContext();
+export const AuthContext = createContext(null);
 
-export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
-  const [token, setToken] = useState(null);
+export default function AuthProvider({ children }) {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  function login(userData, jwt) {
-    setUser(userData);
-    setToken(jwt);
-  }
+  const loginUser = async (data) => {
+    setLoading(true);
+    try {
+      await login(data); // cookie set by backend
+      setIsAuthenticated(true);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  function logout() {
-    setUser(null);
-    setToken(null);
-  }
+  const registerUser = async (data) => {
+    setLoading(true);
+    try {
+      await register(data);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const logoutUser = () => {
+    // no backend logout route exists
+    // cookie will expire on browser close (or backend expiry)
+    setIsAuthenticated(false);
+  };
 
   return (
-    <AuthContext.Provider value={{ user, token, login, logout }}>
+    <AuthContext.Provider
+      value={{
+        isAuthenticated,
+        loading,
+        loginUser,
+        registerUser,
+        logoutUser,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
-}
-
-export function useAuth() {
-  return useContext(AuthContext);
 }

@@ -1,47 +1,29 @@
 import { Routes, Route } from "react-router-dom";
-import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
-import LoginPage from "./pages/LoginPage";
-import RegisterPage from "./pages/RegisterPage";
-import CategoryPage from "./pages/CategoryPage";
 import ProductPage from "./pages/ProductPage";
-import OrderPage from "./pages/OrderPage";
-import OrderDetailPage from "./pages/OrderDetailPage";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import Navbar from "./components/Navbar";
 import CartPage from "./pages/CartPage";
-import Footer from "./components/Footer";
-import ProtectedRoute from "./routes/ProtectedRoute";
+import OrdersPage from "./pages/OrdersPage";
 
 function App() {
   return (
-    <div className="min-h-screen">
-      <div className="mx-auto max-w-[1400px] px-10 py-6">
-        <Navbar />
+    <div className="min-h-screen bg-[var(--bg)]">
+      <Navbar />
 
-        <main className="py-16">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/register" element={<RegisterPage />} />
-            <Route path="/category/:type" element={<CategoryPage />} />
-            <Route path="/product/:id" element={<ProductPage />} />
-            <Route path="/cart" element={<CartPage />} />
-
-            <Route path="/orders" element={
-              <ProtectedRoute>
-                <OrderPage/>
-              </ProtectedRoute>
-            }/>
-            <Route path="/order/:id" element={
-              <ProtectedRoute>
-                <OrderDetailPage />
-              </ProtectedRoute>
-            } />
-          </Routes>
-        </main>
-        <Footer />
-      </div>
+      <main className="mx-auto max-w-7xl px-6 py-10">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/product/:id" element={<ProductPage />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/cart" element={<CartPage />} />
+          <Route path="/orders" element={<OrdersPage />} />
+        </Routes>
+      </main>
     </div>
   );
 }
 
-export default App
+export default App;

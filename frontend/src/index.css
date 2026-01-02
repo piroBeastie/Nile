@@ -15,8 +15,5 @@
     color: var(--color-primary);
     font-family: system-ui, -apple-system, BlinkMacSystemFont,
       "Segoe UI", sans-serif;
-    /* overflow-y: scroll; */
   }
-
-  
 }

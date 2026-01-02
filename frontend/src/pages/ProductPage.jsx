@@ -1,20 +1,74 @@
-import { useParams } from "react-router-dom";
-import { products } from "../data/products";
-import { useCart } from "../context/CartContext";
+import { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { getProductById } from "../api/product.api";
+import { addToCart } from "../api/cart.api";
+import { getCart } from "../api/cart.api";
 
 export default function ProductPage() {
   const { id } = useParams();
-  const { cartItems, addToCart } = useCart();
+  const navigate = useNavigate();
 
-  const product = products.find(p => p._id === id);
-  if (!product) return <p>Product not found.</p>;
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [adding, setAdding] = useState(false);
+  const [added, setAdded] = useState(false);
 
-  const isInCart = cartItems.some(
-    item => item._id === product._id
-  );
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // 1️⃣ Fetch product
+        const productRes = await getProductById(id);
+        const productData =
+          productRes.data.product || productRes.data;
+        setProduct(productData);
+
+        // 2️⃣ Fetch cart
+        const cartRes = await getCart();
+
+        // 3️⃣ Check if already in cart
+        const exists = cartRes.data.items.some(
+          (item) => item.product._id === productData._id
+        );
+
+        if (exists) {
+          setAdded(true);
+        }
+      } catch (err) {
+        // If user not logged in, cart fetch will fail → ignore
+        console.log("Cart check skipped");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [id]);
+
+  const handleAddToCart = async () => {
+    try {
+      setAdding(true);
+      await addToCart(product._id, 1);
+      setAdded(true);
+    } catch (err) {
+      if (err.response?.status === 401) {
+        navigate("/login");
+      }
+    } finally {
+      setAdding(false);
+    }
+  };
+
+  if (loading) {
+    return <p className="text-sm opacity-70">Loading...</p>;
+  }
+
+  if (!product) {
+    return <p className="text-sm opacity-70">Product not found</p>;
+  }
 
   return (
-    <div className="grid grid-cols-2 gap-20">
+    <div className="grid grid-cols-2 gap-16">
+      {/* Image */}
       <div className="bg-white">
         <img
           src={product.image}
@@ -23,35 +77,34 @@ export default function ProductPage() {
         />
       </div>
 
+      {/* Details */}
       <div>
-        <p className="mb-2 text-sm uppercase tracking-wider opacity-60">
-          {product.category}
-        </p>
-
-        <h1 className="mb-4 text-3xl font-semibold">
+        <h1 className="text-3xl font-semibold leading-tight">
           {product.name}
         </h1>
 
-        <p className="mb-6 text-lg">
+        <p className="mt-2 text-sm opacity-70">
+          {product.category}
+        </p>
+
+        <p className="mt-6 text-xl font-medium">
           ₹{product.price.toLocaleString()}
         </p>
 
-        <p className="mb-10 max-w-md leading-relaxed opacity-80">
+        <p className="mt-6 max-w-md text-sm leading-relaxed opacity-80">
           {product.description}
         </p>
 
         <button
-          onClick={() => addToCart(product)}
-          disabled={isInCart}
-          className={`rounded-sm px-8 py-4 text-sm uppercase tracking-wider transition
-            ${
-              isInCart
-                ? "bg-gray-300 text-black cursor-not-allowed"
-                : "bg-black text-white hover:opacity-90"
-            }
-          `}
+          onClick={handleAddToCart}
+          disabled={adding || added}
+          className="mt-10 inline-block border border-black px-10 py-3 text-sm tracking-wide transition hover:bg-black hover:text-white disabled:opacity-50"
         >
-          {isInCart ? "Added" : "Add to Cart"}
+          {added
+            ? "Added to Cart"
+            : adding
+            ? "Adding..."
+            : "Add to Cart"}
         </button>
       </div>
     </div>
