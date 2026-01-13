@@ -16,16 +16,16 @@ export default function ProductPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // 1️⃣ Fetch product
+        // Fetch product
         const productRes = await getProductById(id);
         const productData =
           productRes.data.product || productRes.data;
         setProduct(productData);
 
-        // 2️⃣ Fetch cart
+        // Fetch cart
         const cartRes = await getCart();
 
-        // 3️⃣ Check if already in cart
+        // Check if already in cart
         const exists = cartRes.data.items.some(
           (item) => item.product._id === productData._id
         );
@@ -34,7 +34,7 @@ export default function ProductPage() {
           setAdded(true);
         }
       } catch (err) {
-        // If user not logged in, cart fetch will fail → ignore
+        // If user not logged in, cart fetch will fail 
         console.log("Cart check skipped");
       } finally {
         setLoading(false);

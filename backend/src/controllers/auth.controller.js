@@ -86,3 +86,7 @@ export function logout(req, res) {
 		res.status(500).json({ error: err.message });
 	}
 }
+
+export function checkAuth(req, res) {
+  res.status(200).json({ authenticated: true });
+}

@@ -1,17 +1,16 @@
 import Product from "../models/product.model.js"
 
-export async function getProducts(req,res){
-    // res.status(200).send("Fetching all Products")
-    try{
-        const products = await Product.find()
+export async function getProducts(req, res) {
+  try {
+    const { category } = req.query;
 
-        res.status(200).json(products)
-    } catch(err){
-        console.log("Error in getProducts controller", err.message);
+    const filter = category ? { category } : {};
+    const products = await Product.find(filter);
 
-        res.status(500).json({error: err.message})
-    }
-
+    res.status(200).json(products);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 }
 
 export async function getProduct(req, res){

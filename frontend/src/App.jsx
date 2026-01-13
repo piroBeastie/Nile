@@ -6,6 +6,7 @@ import Register from "./pages/Register";
 import Navbar from "./components/Navbar";
 import CartPage from "./pages/CartPage";
 import OrdersPage from "./pages/OrdersPage";
+import ShopPage from "./pages/ShopPage";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/cart" element={<CartPage />} />
           <Route path="/orders" element={<OrdersPage />} />
+          <Route path="/shop" element={<ShopPage />} />
         </Routes>
       </main>
     </div>

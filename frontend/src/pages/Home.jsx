@@ -12,7 +12,6 @@ export default function Home() {
         const res = await getAllProducts();
         const allProducts = res.data.products || res.data;
 
-        // SAME logic you had earlier
         const featured = allProducts.filter(p => p.isFeatured);
         setProducts(featured);
       } catch (err) {

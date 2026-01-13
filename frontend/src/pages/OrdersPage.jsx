@@ -1,11 +1,22 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { getOrders } from "../api/order.api";
+import { AuthContext } from "../context/AuthContext";
 
 export default function OrdersPage() {
+  const { isAuthenticated, loading: authLoading } = useContext(AuthContext);
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+
+  // Block page until auth is verified
+  if (authLoading) return null;
+
+  // Redirect unauthenticated users
+  if (!isAuthenticated) {
+    navigate("/login");
+    return null;
+  }
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -55,18 +66,15 @@ export default function OrdersPage() {
           key={order._id}
           className="border border-black/10 p-6"
         >
-          {/* Header */}
           <div className="mb-4 flex justify-between text-sm">
             <span className="opacity-70">
               Order #{order._id.slice(-6)}
             </span>
-
             <span className="opacity-70">
               {new Date(order.createdAt).toLocaleDateString()}
             </span>
           </div>
 
-          {/* Items */}
           <div className="space-y-4">
             {order.items.map((item) => (
               <div
@@ -76,7 +84,6 @@ export default function OrdersPage() {
                 <span>
                   {item.product.name} × {item.quantity}
                 </span>
-
                 <span>
                   ₹{(item.product.price * item.quantity).toLocaleString()}
                 </span>
@@ -84,7 +91,6 @@ export default function OrdersPage() {
             ))}
           </div>
 
-          {/* Footer */}
           <div className="mt-6 flex justify-between border-t border-black/10 pt-4 text-sm">
             <span className="font-medium">Total</span>
             <span className="font-medium">

@@ -3,7 +3,7 @@ import api from "./axios";
 export const addToCart = (productId, quantity = 1) => {
   return api.post("/cart", {
     productId,
-    quantity, // ✅ MUST be quantity
+    quantity, 
   });
 };
 
@@ -12,7 +12,7 @@ export const getCart = () => {
 };
 
 export const removeFromCart = (itemId) => {
-  return api.delete(`/cart/${itemId}`); // ✅ cart item _id
+  return api.delete(`/cart/${itemId}`); 
 };
 
 export const updateCartQty = (itemId, quantity) => {

@@ -6,7 +6,7 @@ export async function protect(req,res,next){
 	try{
 		const token = req.cookies.accessToken;
 		if(!token){
-			return res.status(400).json({message: "No token Found"})
+			return res.status(401).json({ message: "Not authenticated" });
 		}
 
 		const decoded = jwt.verify(token, process.env.JWT_SECRET)

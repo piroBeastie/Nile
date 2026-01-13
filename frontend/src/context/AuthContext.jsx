@@ -1,34 +1,43 @@
-import { createContext, useState } from "react";
-import { login, register } from "../api/auth.api";
+import { createContext, useEffect, useState } from "react";
+import {
+  login,
+  register,
+  logout,
+  checkAuth,
+} from "../api/auth.api";
 
 export const AuthContext = createContext(null);
 
 export default function AuthProvider({ children }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const verifyAuth = async () => {
+      try {
+        await checkAuth();       
+        setIsAuthenticated(true);
+      } catch {
+        setIsAuthenticated(false);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    verifyAuth();
+  }, []);
 
   const loginUser = async (data) => {
-    setLoading(true);
-    try {
-      await login(data); // cookie set by backend
-      setIsAuthenticated(true);
-    } finally {
-      setLoading(false);
-    }
+    await login(data);       
+    setIsAuthenticated(true);
   };
 
   const registerUser = async (data) => {
-    setLoading(true);
-    try {
-      await register(data);
-    } finally {
-      setLoading(false);
-    }
+    await register(data);
   };
 
-  const logoutUser = () => {
-    // no backend logout route exists
-    // cookie will expire on browser close (or backend expiry)
+  const logoutUser = async () => {
+    await logout();              
     setIsAuthenticated(false);
   };
 
