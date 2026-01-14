@@ -7,6 +7,7 @@ import Navbar from "./components/Navbar";
 import CartPage from "./pages/CartPage";
 import OrdersPage from "./pages/OrdersPage";
 import ShopPage from "./pages/ShopPage";
+import PaymentSuccess from "./pages/PaymentSuccess";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
           <Route path="/cart" element={<CartPage />} />
           <Route path="/orders" element={<OrdersPage />} />
           <Route path="/shop" element={<ShopPage />} />
+          <Route path="/payment-success" element={<PaymentSuccess />} />
         </Routes>
       </main>
     </div>

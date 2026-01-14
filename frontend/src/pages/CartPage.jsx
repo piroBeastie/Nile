@@ -5,7 +5,9 @@ import {
   removeFromCart,
   updateCartQty,
 } from "../api/cart.api";
-import { createOrder } from "../api/order.api";
+import axios from "axios";
+import { API_URL } from "../api/base";
+// import { createOrder } from "../api/order.api";
 
 export default function CartPage() {
   const [cart, setCart] = useState(null);
@@ -53,6 +55,21 @@ export default function CartPage() {
     (sum, item) => sum + item.product.price * item.quantity,
     0
   );
+
+  const handleCheckout = async () => {
+    try {
+      const res = await axios.post(
+        `${API_URL}/api/payment/create-checkout-session`,
+        { cartItems: cart.items },
+        { withCredentials: true }
+      );
+
+      window.location.href = res.data.url;
+    } catch (error) {
+      console.error("Stripe checkout error:", error);
+      alert("Payment init failed");
+    }
+  };
 
   return (
     <div className="grid grid-cols-3 gap-16">
@@ -144,7 +161,7 @@ export default function CartPage() {
           <span>₹{total.toLocaleString()}</span>
         </div>
 
-        <button
+        {/* <button
         onClick={async () => {
             try {
             await createOrder();
@@ -160,6 +177,12 @@ export default function CartPage() {
         className="mt-8 w-full border border-black py-3 text-sm tracking-wide hover:bg-black hover:text-white transition"
         >
         Checkout
+        </button> */}
+        <button
+          onClick={handleCheckout}
+          className="mt-8 w-full border border-black py-3 text-sm tracking-wide hover:bg-black hover:text-white transition"
+        >
+          Checkout
         </button>
       </div>
     </div>

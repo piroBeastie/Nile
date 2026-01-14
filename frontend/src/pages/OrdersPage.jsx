@@ -10,13 +10,16 @@ export default function OrdersPage() {
   const navigate = useNavigate();
 
   // Block page until auth is verified
-  if (authLoading) return null;
+  useEffect(() => {
+    // wait until auth check finishes
+    if (authLoading) return;
 
-  // Redirect unauthenticated users
-  if (!isAuthenticated) {
-    navigate("/login");
-    return null;
-  }
+    // if not logged in, redirect
+    if (!isAuthenticated) {
+      navigate("/login");
+      return;
+    }
+  })
 
   useEffect(() => {
     const fetchOrders = async () => {

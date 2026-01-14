@@ -1,43 +1,102 @@
 import Order from "../models/order.model.js";
 import Cart from "../models/cart.model.js";
+import stripe from "../config/stripe.js";
 
-export async function postOrder(req,res){
-    // res.status(200).send("Order Created Successfully")
-    try {
+export async function createOrderAfterPayment(req, res) {
+	try {
 		const userId = req.user._id;
-		// const { items } = req.body;
-		const cart = await Cart.findOne({user: userId}).populate("items.product")
+		const { sessionId } = req.body;
 
-		if (!cart || cart.items.length === 0) {
-			return res.status(400).json({ message: "No order items" });
+		// 1. Verify payment from Stripe
+		const existingOrder = await Order.findOne({ stripeSessionId: sessionId });
+
+		if (existingOrder) {
+			return res.status(200).json(existingOrder); // already created, just return it
+		}
+		const session = await stripe.checkout.sessions.retrieve(sessionId);
+
+		if (session.payment_status !== "paid") {
+			return res.status(400).json({ message: "Payment not completed" });
 		}
 
-		const orderItems = cart.items.map((item)=>{
-			return{
-				product: item.product._id,
-				quantity: item.quantity,
-				price: item.product.price
-			}
-		})
+		// 2. Get cart
+		const cart = await Cart.findOne({ user: userId }).populate("items.product");
+
+		if (!cart || cart.items.length === 0) {
+			return res.status(200).json({ message: "Order already processed" });
+		}
+
+		// 3. Prepare order items (matches YOUR schema)
+		const orderItems = cart.items.map((item) => ({
+			product: item.product._id,
+			quantity: item.quantity,
+			price: item.product.price
+		}));
 
 		const totalPrice = orderItems.reduce(
 			(acc, item) => acc + item.price * item.quantity,
 			0
 		);
 
+		// 4. Create order
 		const order = await Order.create({
 			user: userId,
 			items: orderItems,
 			totalPrice,
+			isPaid: true,
+			paidAt: Date.now(),
+			paymentMethod: "Stripe",
+			stripeSessionId: sessionId
 		});
 
+		// 5. Clear cart
 		await Cart.findOneAndDelete({ user: userId });
 
 		res.status(201).json(order);
+
 	} catch (err) {
+		console.error("Stripe Order Error:", err);
 		res.status(500).json({ error: err.message });
 	}
 }
+
+// export async function postOrder(req,res){
+//     // res.status(200).send("Order Created Successfully")
+//     try {
+// 		const userId = req.user._id;
+// 		// const { items } = req.body;
+// 		const cart = await Cart.findOne({user: userId}).populate("items.product")
+
+// 		if (!cart || cart.items.length === 0) {
+// 			return res.status(400).json({ message: "No order items" });
+// 		}
+
+// 		const orderItems = cart.items.map((item)=>{
+// 			return{
+// 				product: item.product._id,
+// 				quantity: item.quantity,
+// 				price: item.product.price
+// 			}
+// 		})
+
+// 		const totalPrice = orderItems.reduce(
+// 			(acc, item) => acc + item.price * item.quantity,
+// 			0
+// 		);
+
+// 		const order = await Order.create({
+// 			user: userId,
+// 			items: orderItems,
+// 			totalPrice,
+// 		});
+
+// 		await Cart.findOneAndDelete({ user: userId });
+
+// 		res.status(201).json(order);
+// 	} catch (err) {
+// 		res.status(500).json({ error: err.message });
+// 	}
+// }
 
 export async function getOrderById(req,res){
     // res.status(200).send("Fetching your Order")
