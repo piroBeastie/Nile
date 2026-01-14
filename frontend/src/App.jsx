@@ -8,6 +8,7 @@ import CartPage from "./pages/CartPage";
 import OrdersPage from "./pages/OrdersPage";
 import ShopPage from "./pages/ShopPage";
 import PaymentSuccess from "./pages/PaymentSuccess";
+import Footer from "./components/Footer";
 
 function App() {
   return (
@@ -26,6 +27,8 @@ function App() {
           <Route path="/payment-success" element={<PaymentSuccess />} />
         </Routes>
       </main>
+      
+      <Footer />
     </div>
   );
 }
