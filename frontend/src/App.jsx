@@ -12,10 +12,10 @@ import Footer from "./components/Footer";
 
 function App() {
   return (
-    <div className="min-h-screen bg-[var(--bg)]">
+    <div className="min-h-screen bg-[var(--bg)] flex flex-col">
       <Navbar />
 
-      <main className="mx-auto max-w-7xl px-6 py-10">
+      <main className="mx-auto max-w-7xl px-6 py-10 flex-1 w-full">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/product/:id" element={<ProductPage />} />
@@ -27,7 +27,7 @@ function App() {
           <Route path="/payment-success" element={<PaymentSuccess />} />
         </Routes>
       </main>
-      
+
       <Footer />
     </div>
   );
