@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import axios from "axios";
+import api from "../api/axios";
 
 const PaymentSuccess = () => {
   const [searchParams] = useSearchParams();
@@ -13,11 +13,7 @@ const PaymentSuccess = () => {
 
     const confirmPayment = async () => {
       try {
-        await axios.post(
-          `/orders/create-after-payment`,
-          { sessionId },
-          { withCredentials: true }
-        );
+        await api.post("/orders/create-after-payment", { sessionId });
 
         navigate("/orders");
       } catch (error) {

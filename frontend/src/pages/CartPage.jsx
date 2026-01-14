@@ -5,7 +5,7 @@ import {
   removeFromCart,
   updateCartQty,
 } from "../api/cart.api";
-import axios from "axios";
+import api from "../api/axios";
 
 export default function CartPage() {
   const [cart, setCart] = useState(null);
@@ -56,11 +56,9 @@ export default function CartPage() {
 
   const handleCheckout = async () => {
     try {
-      const res = await axios.post(
-        `/payment/create-checkout-session`,
-        { cartItems: cart.items },
-        { withCredentials: true }
-      );
+      const res = await api.post("/payment/create-checkout-session", {
+        cartItems: cart.items,
+      });
 
       window.location.href = res.data.url;
     } catch (error) {
