@@ -6,7 +6,6 @@ import {
   updateCartQty,
 } from "../api/cart.api";
 import axios from "axios";
-import { API_URL } from "../api/base";
 
 export default function CartPage() {
   const [cart, setCart] = useState(null);
@@ -58,7 +57,7 @@ export default function CartPage() {
   const handleCheckout = async () => {
     try {
       const res = await axios.post(
-        `${API_URL}/api/payment/create-checkout-session`,
+        `/payment/create-checkout-session`,
         { cartItems: cart.items },
         { withCredentials: true }
       );

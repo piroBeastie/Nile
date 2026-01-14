@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import axios from "axios";
-import { API_URL } from "../api/base";
 
 const PaymentSuccess = () => {
   const [searchParams] = useSearchParams();
@@ -15,7 +14,7 @@ const PaymentSuccess = () => {
     const confirmPayment = async () => {
       try {
         await axios.post(
-          `${API_URL}/api/orders/create-after-payment`,
+          `/orders/create-after-payment`,
           { sessionId },
           { withCredentials: true }
         );
