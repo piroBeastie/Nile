@@ -1,5 +1,6 @@
 {
   "rewrites": [
+    { "source": "/api/(.*)", "destination": "https://nile-nq4k.onrender.com/api/$1" },
     { "source": "/(.*)", "destination": "/" }
   ]
 }
