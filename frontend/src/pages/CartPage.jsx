@@ -7,7 +7,6 @@ import {
 } from "../api/cart.api";
 import axios from "axios";
 import { API_URL } from "../api/base";
-// import { createOrder } from "../api/order.api";
 
 export default function CartPage() {
   const [cart, setCart] = useState(null);
@@ -161,23 +160,6 @@ export default function CartPage() {
           <span>₹{total.toLocaleString()}</span>
         </div>
 
-        {/* <button
-        onClick={async () => {
-            try {
-            await createOrder();
-            navigate("/orders");
-            } catch (err) {
-            if (err.response?.status === 401) {
-                navigate("/login");
-            } else {
-                console.error("Checkout failed", err);
-            }
-            }
-        }}
-        className="mt-8 w-full border border-black py-3 text-sm tracking-wide hover:bg-black hover:text-white transition"
-        >
-        Checkout
-        </button> */}
         <button
           onClick={handleCheckout}
           className="mt-8 w-full border border-black py-3 text-sm tracking-wide hover:bg-black hover:text-white transition"

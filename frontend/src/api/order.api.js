@@ -1,9 +1,5 @@
 import api from "./axios";
 
-// export const createOrder = () => {
-//   return api.post("/orders");
-// };
-
 export const createStripeSession = (cartItems) => {
   return api.post("/payment/create-checkout-session", { cartItems });
 };

@@ -26,7 +26,7 @@ export default function Navbar() {
   return (
     <header className="border-b border-black/10">
       <div className="mx-auto max-w-7xl px-6 py-5 flex items-center justify-between">
-        {/* Logo = Home / All */}
+        {/* Logo = Home*/}
         <Link to="/" className="text-lg font-semibold tracking-wide">
           NILE.
         </Link>

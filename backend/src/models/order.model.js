@@ -33,12 +33,7 @@ const orderSchema = new mongoose.Schema(
 			default: false,
 		},
 		paidAt: Date,
-		// deliveryStatus: {
-		// 	type: String,
-		// 	enum: ["pending", "shipped", "delivered"],
-		// 	default: "pending",
-		// },
-		// deliveredAt: Date,
+
 		stripeSessionId: {
 			type: String,
 			unique: true,

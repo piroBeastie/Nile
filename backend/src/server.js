@@ -33,7 +33,7 @@ app.use("/api/payment", paymentRoutes);
 connectDB();
 
 app.listen(PORT, ()=>{
-    console.log(`Server is working at: http://localhost:` + PORT)
+    console.log(`Server running on port ${PORT}`)
 })
 
 
